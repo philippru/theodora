@@ -195,5 +195,49 @@ def extract(
     raise typer.Exit(code=0)
 
 
+@app.command()
+def reconcile(
+    package: str = typer.Option(..., "--package", "-p", help="RoI package directory."),
+    actual: str = typer.Option(..., "--actual", "-a", help="Actual-usage list: one provider per line, optional 'code,name'."),
+    model: str | None = typer.Option(None, "--model", "-m", help="Optional LLM (LiteLLM id) for fuzzy name matching."),
+) -> None:
+    """Reconcile registered ICT providers (B_05.01) against actually-used ones — flag shadow providers."""
+    from pathlib import Path
+
+    from theodora.agent.reconcile import Provider, register_providers
+    from theodora.agent.reconcile import reconcile as run_reconcile
+
+    register = register_providers(Path(package))
+    actual_list: list[Provider] = []
+    for line in Path(actual).read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        if "," in line:
+            code, name = line.split(",", 1)
+            actual_list.append(Provider(code=code.strip(), name=name.strip()))
+        else:
+            actual_list.append(Provider(name=line))
+
+    proposer = None
+    if model:
+        from theodora.agent.llm import available, extractor
+
+        if not available():
+            typer.echo("LLM extra not installed. Install with:  uv sync --extra agent")
+            raise typer.Exit(code=2)
+        proposer = extractor(model)
+
+    result = run_reconcile(register, actual_list, proposer)
+    for p in result.shadow:
+        typer.echo(f"SHADOW (used, not registered): {p.label()}")
+    for p in result.stale:
+        typer.echo(f"stale (registered, not in actual list): {p.label()}")
+    for r, a in result.llm_proposed:
+        typer.echo(f"LLM-proposed match (review): register '{r.label()}' ~ actual '{a.label()}'")
+    typer.echo(f"\n{len(result.matched)} matched · {len(result.shadow)} shadow · {len(result.stale)} stale.")
+    raise typer.Exit(code=1 if result.shadow else 0)
+
+
 if __name__ == "__main__":
     app()

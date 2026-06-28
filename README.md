@@ -49,6 +49,9 @@ uv run --extra agent roi fix -p out/<package-dir> --model anthropic/claude-sonne
 
 # (optional [agent] extra) extract a template row from a contract PDF — shown for review, then validate
 uv run --extra agent roi extract --pdf contract.pdf --template B_02.02 --model anthropic/claude-sonnet-4-6
+
+# reconcile registered providers (B_05.01) vs an actually-used list — flags SHADOW providers (DORA gap)
+uv run roi reconcile -p out/<package-dir> -a actual-providers.txt   # add --model … for fuzzy name matching
 ```
 
 `roi convert` accepts columns identified by either the xBRL code (`c0010`) or the human
@@ -77,9 +80,9 @@ the pinned versions (Taxonomy v2.0 · Framework 4.0 · DPM 4.0 · Filing Rules v
 ## Status
 
 Early but functional: `convert` / `validate` / `generate` / `crosscheck` all work; generated
-packages are XBRL-conformant. An optional **agent layer** (`fix` / `extract`) lets an LLM propose
-fixes and extract from contracts — every proposal must pass validation (*LLM proposes, Theodora
-decides*). Not yet production-hardened.
+packages are XBRL-conformant. An optional **agent layer** (`fix` / `extract` / `reconcile`) lets an
+LLM propose fixes, extract from contracts, and detect shadow providers — every proposal must pass
+validation (*LLM proposes, Theodora decides*). Not yet production-hardened.
 
 ## Maintainer
 
