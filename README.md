@@ -5,6 +5,12 @@ Register of Information in the EBA-mandated **xBRL-CSV** format, locally and rep
 
 > *Recht in strukturierte, prüfbare Form gebracht.*
 
+**The name.** *Theo·dora* carries **DORA** within it — and honours Empress **Theodora of
+Byzantium** (c. 500–548), consort and co-ruler of Justinian I, whose reign produced the *Corpus
+Juris Civilis* — the codification that turned sprawling Roman law into one ordered, verifiable
+code. This toolkit does the same for the DORA Register: it turns scattered ICT-contract facts
+into a single structured, machine-checkable filing. (From Greek *Theós + dõron* — "gift of God".)
+
 ## Why
 
 Every financial entity in scope of [DORA](https://eur-lex.europa.eu/eli/reg/2022/2554/oj)
