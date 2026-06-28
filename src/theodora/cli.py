@@ -134,5 +134,32 @@ def crosscheck(
     raise typer.Exit(code=code)
 
 
+@app.command()
+def fix(
+    package: str = typer.Option(..., "--package", "-p", help="RoI package directory to remediate."),
+    output: str | None = typer.Option(None, "--output", "-o", help="Write the fixed copy here (default: in place)."),
+    model: str | None = typer.Option(None, "--model", "-m", help="LiteLLM model id (e.g. anthropic/claude-sonnet-4-6, openai/gpt-4o-mini, gemini/…, bedrock/…, ollama/…). Default: $THEODORA_LLM_MODEL."),
+) -> None:
+    """LLM proposes fixes for validation findings — kept only if re-validation passes (Theodora decides)."""
+    import shutil
+    from pathlib import Path
+
+    from theodora.agent.llm import available, litellm_proposer
+    from theodora.agent.remediate import remediate
+
+    if not available():
+        typer.echo("LLM extra not installed. Install with:  uv sync --extra agent")
+        raise typer.Exit(code=2)
+    target = Path(package)
+    if output:
+        target = Path(output)
+        shutil.copytree(Path(package), target, dirs_exist_ok=True)
+    result = remediate(target, litellm_proposer(model))
+    for tid, row, alias, old, new in result.changes:
+        typer.echo(f"fixed {tid} row={row} {alias}: '{old}' -> '{new}'")
+    typer.echo(f"\n{len(result.changes)} change(s) applied; {len(result.remaining)} finding(s) remaining.")
+    raise typer.Exit(code=0 if not result.remaining else 1)
+
+
 if __name__ == "__main__":
     app()

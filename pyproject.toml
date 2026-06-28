@@ -21,6 +21,9 @@ roi = "theodora.cli:app"
 arelle = [
     "arelle-release>=2.41.6",
 ]
+agent = [
+    "litellm>=1.90.0",
+]
 
 [dependency-groups]
 dev = [
@@ -37,5 +40,5 @@ build-backend = "uv_build"
 python_version = "3.12"
 
 [[tool.mypy.overrides]]
-module = ["arelle.*", "openpyxl.*"]
+module = ["arelle.*", "openpyxl.*", "litellm.*"]
 ignore_missing_imports = true

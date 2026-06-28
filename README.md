@@ -42,6 +42,10 @@ uv run roi generate -e <LEI> -o out/
 # cross-check against the OFFICIAL EBA taxonomy AND run the full official rule set, via Arelle
 uv run --extra arelle roi crosscheck -p out/<package-dir> -t <EBA-taxonomy-package.zip>
 #   add --structural-only for a fast offline check (skips the e23/v8 formula rules)
+
+# (optional [agent] extra) an LLM proposes fixes for findings — kept ONLY if re-validation passes
+uv run --extra agent roi fix -p out/<package-dir> --model anthropic/claude-sonnet-4-6
+#   provider-agnostic via LiteLLM: Claude · OpenAI · Gemini · Bedrock · Azure · local (Ollama)
 ```
 
 `roi convert` accepts columns identified by either the xBRL code (`c0010`) or the human
