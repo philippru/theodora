@@ -76,6 +76,10 @@ the pinned versions (Taxonomy v2.0 · Framework 4.0 · DPM 4.0 · Filing Rules v
 Early but functional: `convert` / `validate` / `generate` / `crosscheck` all work; generated
 packages are XBRL-conformant. Not yet production-hardened.
 
+## Maintainer
+
+**Philipp Ruisinger**, Wien · <philipp@ruisinger.at> — full [Impressum](IMPRESSUM.md).
+
 ## License
 
-[Apache-2.0](LICENSE) — commercial use explicitly permitted.
+[Apache-2.0](LICENSE) — commercial use explicitly permitted. © 2026 Philipp Ruisinger.
