@@ -1,0 +1,41 @@
+[project]
+name = "theodora"
+version = "0.1.0"
+description = "The open DORA Register of Information (RoI) toolkit — generate & validate xBRL-CSV, locally and reproducibly."
+readme = "README.md"
+authors = [
+    { name = "philippRui", email = "philipp@ruisinger.at" }
+]
+license = "Apache-2.0"
+requires-python = ">=3.12"
+dependencies = [
+    "openpyxl>=3.1.5",
+    "pydantic>=2.0",
+    "typer>=0.12",
+]
+
+[project.scripts]
+roi = "theodora.cli:app"
+
+[project.optional-dependencies]
+arelle = [
+    "arelle-release>=2.41.6",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.6",
+    "mypy>=1.11",
+]
+
+[build-system]
+requires = ["uv_build>=0.10.10,<0.11.0"]
+build-backend = "uv_build"
+
+[tool.mypy]
+python_version = "3.12"
+
+[[tool.mypy.overrides]]
+module = ["arelle.*", "openpyxl.*"]
+ignore_missing_imports = true

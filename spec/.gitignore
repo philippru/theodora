@@ -1,0 +1,11 @@
+# EBA source artifacts: downloaded locally for development, NOT committed.
+# Reasons: repo size + avoid redistributing EBA material in a public repo.
+# Reproduce exactly via the links in README.md; versions pinned in FROZEN.md.
+*.pdf
+*.xlsx
+*.xlsb
+*.xlsm
+*.zip
+*.csv
+*.json
+dora_golden_instance/
