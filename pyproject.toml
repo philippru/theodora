@@ -23,6 +23,7 @@ arelle = [
 ]
 agent = [
     "litellm>=1.90.0",
+    "pypdf>=6.14.2",
 ]
 
 [dependency-groups]
@@ -40,5 +41,5 @@ build-backend = "uv_build"
 python_version = "3.12"
 
 [[tool.mypy.overrides]]
-module = ["arelle.*", "openpyxl.*", "litellm.*"]
+module = ["arelle.*", "openpyxl.*", "litellm.*", "pypdf.*"]
 ignore_missing_imports = true

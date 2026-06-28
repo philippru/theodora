@@ -161,5 +161,39 @@ def fix(
     raise typer.Exit(code=0 if not result.remaining else 1)
 
 
+@app.command()
+def extract(
+    pdf: str = typer.Option(..., "--pdf", help="Contract PDF to extract values from."),
+    template: str = typer.Option(..., "--template", "-t", help="Target RoI template, e.g. B_02.02."),
+    model: str | None = typer.Option(None, "--model", "-m", help="LiteLLM model id (default: $THEODORA_LLM_MODEL)."),
+) -> None:
+    """LLM extracts a template row from a contract PDF — shown for review, then `roi validate` decides."""
+    from pathlib import Path  # noqa: F401
+
+    from theodora.agent.extract import extract_row
+    from theodora.agent.llm import available, extractor
+    from theodora.validation.engine import _alias_labels
+
+    if not available():
+        typer.echo("LLM extra not installed. Install with:  uv sync --extra agent")
+        raise typer.Exit(code=2)
+    try:
+        import pypdf
+    except ImportError:
+        typer.echo("pypdf missing. Install with:  uv sync --extra agent")
+        raise typer.Exit(code=2)
+    text = "\n".join(page.extract_text() or "" for page in pypdf.PdfReader(pdf).pages)
+    tid = template.upper()
+    row = extract_row(text, tid, extractor(model))
+    if not row:
+        typer.echo("No fields extracted.")
+        raise typer.Exit(code=1)
+    labels = _alias_labels(tid)
+    for alias, value in row.items():
+        typer.echo(f"{alias}  {labels.get(alias, '')}: {value}")
+    typer.echo(f"\n{len(row)} field(s) extracted for {tid}. Review, then `roi validate` to let Theodora decide.")
+    raise typer.Exit(code=0)
+
+
 if __name__ == "__main__":
     app()

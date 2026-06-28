@@ -39,6 +39,30 @@ def available() -> bool:
         return False
 
 
+_EXTRACT_SYSTEM = (
+    "You extract structured values from a contract for a DORA Register-of-Information template. "
+    "Reply with ONLY a JSON object mapping field keys (cXXXX) to values; omit unknown fields."
+)
+
+
+def extractor(model: str | None = None) -> Proposer:
+    """Return a Proposer tuned for JSON extraction (larger output, extraction system prompt)."""
+    import litellm
+
+    chosen = model or DEFAULT_MODEL
+
+    def propose(prompt: str) -> str:
+        resp = litellm.completion(
+            model=chosen,
+            messages=[{"role": "system", "content": _EXTRACT_SYSTEM}, {"role": "user", "content": prompt}],
+            temperature=0,
+            max_tokens=800,
+        )
+        return (resp.choices[0].message.content or "").strip()
+
+    return propose
+
+
 def litellm_proposer(model: str | None = None) -> Proposer:
     """Return a Proposer backed by LiteLLM for the given (or default) model."""
     import litellm

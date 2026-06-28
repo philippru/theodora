@@ -46,6 +46,9 @@ uv run --extra arelle roi crosscheck -p out/<package-dir> -t <EBA-taxonomy-packa
 # (optional [agent] extra) an LLM proposes fixes for findings — kept ONLY if re-validation passes
 uv run --extra agent roi fix -p out/<package-dir> --model anthropic/claude-sonnet-4-6
 #   provider-agnostic via LiteLLM: Claude · OpenAI · Gemini · Bedrock · Azure · local (Ollama)
+
+# (optional [agent] extra) extract a template row from a contract PDF — shown for review, then validate
+uv run --extra agent roi extract --pdf contract.pdf --template B_02.02 --model anthropic/claude-sonnet-4-6
 ```
 
 `roi convert` accepts columns identified by either the xBRL code (`c0010`) or the human
@@ -74,7 +77,9 @@ the pinned versions (Taxonomy v2.0 · Framework 4.0 · DPM 4.0 · Filing Rules v
 ## Status
 
 Early but functional: `convert` / `validate` / `generate` / `crosscheck` all work; generated
-packages are XBRL-conformant. Not yet production-hardened.
+packages are XBRL-conformant. An optional **agent layer** (`fix` / `extract`) lets an LLM propose
+fixes and extract from contracts — every proposal must pass validation (*LLM proposes, Theodora
+decides*). Not yet production-hardened.
 
 ## Maintainer
 
